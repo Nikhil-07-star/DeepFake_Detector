@@ -13,11 +13,14 @@ from rawnet import RawNet
 #Set random seed for reproducibility.
 tf.random.set_seed(42)
 
-local_zip = "./efficientnet-b0.zip"
-zip_ref = zipfile.ZipFile(local_zip, 'r')
-zip_ref.extractall()
-zip_ref.close()
-
+# Extract model if not already extracted
+if not os.path.exists("efficientnet-b0"):
+    local_zip = "./efficientnet-b0.zip"
+    if os.path.exists(local_zip):
+        zip_ref = zipfile.ZipFile(local_zip, 'r')
+        zip_ref.extractall()
+        zip_ref.close()
+        print("Model extracted successfully!")
 
 # Load models.
 # Load model without compiling to avoid optimizer dependency issues

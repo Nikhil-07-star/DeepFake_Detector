@@ -48,3 +48,6 @@ check_*.py
 *.log
 *.tmp
 cleanup.ps1
+
+# Model archives (extracted versions are in Git LFS)
+*.zip
