@@ -5,5 +5,3 @@ facenet-pytorch
 mtcnn
 numpy
 opencv-python-headless
-moviepy
-librosa
