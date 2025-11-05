@@ -1,54 +1,27 @@
-import gradio as gr
+import streamlit as st
 import pipeline
 
-# Custom CSS for larger interface
-custom_css = """
-.gradio-container {
-    max-width: 1400px !important;
-}
-#component-0, #component-1, #component-2 {
-    min-height: 500px !important;
-}
-.output-class {
-    min-height: 300px !important;
-    font-size: 24px !important;
-    padding: 30px !important;
-}
-.input-image, .input-video, .input-audio {
-    min-height: 500px !important;
-}
-"""
+st.set_page_config(page_title="EfficientNetV2 DeepFake Detector", layout="wide")
 
-title="EfficientNetV2 Deepfakes Video Detector"
-description="EfficientNetV2 Deepfakes Image Detector by using frame-by-frame detection."
+st.title("🎭 EfficientNetV2 DeepFakes Detector")
+st.write("Detect DeepFake Images and Videos using frame-by-frame detection.")
 
-# Image Interface with larger components
-image_interface = gr.Interface(
-    fn=pipeline.deepfakes_image_predict,
-    inputs=gr.Image(label="Upload Image", height=500),
-    outputs=gr.Textbox(label="Detection Result", lines=8, scale=2),
-    examples=["images/images_lady.jpg", "images/images_fake_image.jpg"],
-    cache_examples=False,
-    title="Image Deepfake Detection",
-    description="Upload an image to detect if it's real or fake"
-)
+tab1, tab2 = st.tabs(["🖼️ Image Inference", "🎥 Video Inference"])
 
-# Video Interface with larger components  
-video_interface = gr.Interface(
-    fn=pipeline.deepfakes_video_predict,
-    inputs=gr.Video(label="Upload Video", height=500),
-    outputs=gr.Textbox(label="Detection Result", lines=8, scale=2),
-    examples=["videos/celeb_synthesis.mp4", "videos/real-1.mp4"],
-    cache_examples=False,
-    title="Video Deepfake Detection",
-    description="Upload a video to detect if it's real or fake (frame-by-frame analysis)"
-)
+with tab1:
+    st.header("Upload Image to Detect DeepFake")
+    uploaded_image = st.file_uploader("Upload an Image", type=["jpg", "jpeg", "png"])
+    if uploaded_image:
+        st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
+        with st.spinner("Analyzing Image..."):
+            result = pipeline.deepfakes_image_predict(uploaded_image)
+        st.success(result)
 
-app = gr.TabbedInterface(
-    interface_list=[image_interface, video_interface], 
-    tab_names=['Image inference', 'Video inference'],
-    css=custom_css
-)
-
-if __name__ == '__main__':
-    app.launch(share=False, inbrowser=True)
+with tab2:
+    st.header("Upload Video to Detect DeepFake")
+    uploaded_video = st.file_uploader("Upload a Video", type=["mp4", "mov", "avi"])
+    if uploaded_video:
+        st.video(uploaded_video)
+        with st.spinner("Analyzing Video..."):
+            result = pipeline.deepfakes_video_predict(uploaded_video)
+        st.success(result)
